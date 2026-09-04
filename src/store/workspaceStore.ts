@@ -11,8 +11,8 @@ interface WorkspaceState {
     clearDocument: () => void;
 }
 
-export const useWorkspaceStore =
-    create<WorkspaceState>((set) => ({
+export const useWorkspaceStore = create<WorkspaceState>(
+    (set) => ({
         selectedCaseId: null,
         selectedDocumentId: null,
 
@@ -37,4 +37,5 @@ export const useWorkspaceStore =
             set({
                 selectedDocumentId: null,
             }),
-    }));
+    })
+);

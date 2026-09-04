@@ -1,41 +1,37 @@
+import { USE_MOCK_API } from "../config";
+
+import * as mockDocuments from "./mock/documents";
+import { apiRequest } from "./api";
+
 export type DocumentStatus =
-    | "pending"
-    | "processing"
-    | "success"
-    | "failed"
-    | "finish";
+  | "pending"
+  | "processing"
+  | "success"
+  | "failed"
+  | "finish";
 
 export interface Document {
-    id: string;
-    title: string;
-    description: string;
-    status: DocumentStatus;
-    object_key: string;
-    extracted_information: Record<string, unknown> | null;
-    case_id: string;
-    created_at: string;
-    updated_at: string;
+  id: string;
+  title: string;
+  description: string;
+  status: DocumentStatus;
+  object_key: string;
+  extracted_information: Record<
+    string,
+    unknown
+  > | null;
+  case_id: string;
+  created_at: string;
+  updated_at: string;
 }
-
-export interface InitiateUploadInput {
-    title: string;
-    description: string;
-    file_name: string;
-    case_id: string;
-}
-
-export interface InitiateUploadResponse {
-    document_id: string;
-    upload_url: string;
-    object_key: string;
-}
-
-/*
-import { apiRequest } from "./api";
 
 export async function getDocuments(
   caseId?: string
 ): Promise<Document[]> {
+  if (USE_MOCK_API) {
+    return mockDocuments.getDocuments(caseId);
+  }
+
   const query = caseId
     ? `?case_id=${encodeURIComponent(caseId)}`
     : "";
@@ -48,20 +44,22 @@ export async function getDocuments(
 export async function getDocument(
   id: string
 ): Promise<Document> {
+  if (USE_MOCK_API) {
+    return mockDocuments.getDocument(id);
+  }
+
   return apiRequest<Document>(
     `/api/documents/${id}`
   );
 }
 
-export async function getDownloadUrl(
+export async function deleteDocument(
   id: string
-): Promise<{ download_url: string }> {
-  return apiRequest(
-    `/api/documents/${id}/download`
-  );
-}
+): Promise<{ message: string }> {
+  if (USE_MOCK_API) {
+    return mockDocuments.deleteDocument(id);
+  }
 
-export async function deleteDocument(id: string) {
   return apiRequest<{ message: string }>(
     `/api/documents/${id}`,
     {
@@ -69,4 +67,16 @@ export async function deleteDocument(id: string) {
     }
   );
 }
-*/
+
+export async function getDownloadUrl(
+  id: string
+): Promise<{ download_url: string }> {
+  if (USE_MOCK_API) {
+    // We'll implement this properly in the mock
+    return mockDocuments.getDownloadUrl(id);
+  }
+
+  return apiRequest<{ download_url: string }>(
+    `/api/documents/${id}/download`
+  );
+}

@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 import type { Document } from "../services/documents";
-import { getDocuments } from "../services/mock/documents";
+import { getDocuments } from "../services/documents";
 
 interface DocumentsState {
     documents: Document[];

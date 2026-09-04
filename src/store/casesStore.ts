@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 import type { Case } from "../services/cases";
-import { getCases } from "../services/mock/cases";
+import { getCases } from "../services/cases";
 
 interface CasesState {
     cases: Case[];

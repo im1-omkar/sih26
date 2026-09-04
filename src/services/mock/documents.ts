@@ -182,3 +182,21 @@ export async function deleteDocument(
         message: `Document ${id} deleted`,
     };
 }
+
+export async function getDownloadUrl(
+    id: string
+): Promise<{ download_url: string }> {
+    await delay();
+
+    const document = mockDocuments.find(
+        (document) => document.id === id
+    );
+
+    if (!document) {
+        throw new Error("Document not found");
+    }
+
+    return {
+        download_url: `https://example.com/documents/${id}`,
+    };
+}

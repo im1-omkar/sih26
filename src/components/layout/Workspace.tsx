@@ -1,11 +1,18 @@
 import { useEffect } from "react";
 
-import { useWorkspaceStore } from "../../store/workspaceStore";
 import { useDocumentsStore } from "../../store/documentsStore";
+import { useWorkspaceStore } from "../../store/workspaceStore";
+
+import DocumentItem from "../documents/DocumentItem";
+import DocumentViewer from "../documents/DocumentViewer";
 
 export default function Workspace() {
     const selectedCaseId = useWorkspaceStore(
         (state) => state.selectedCaseId
+    );
+
+    const selectedDocumentId = useWorkspaceStore(
+        (state) => state.selectedDocumentId
     );
 
     const {
@@ -30,70 +37,64 @@ export default function Workspace() {
                     </h1>
 
                     <p className="mt-2 text-sm text-zinc-500">
-                        Choose a case from the sidebar to view its
-                        documents.
+                        Choose a case from the sidebar.
                     </p>
                 </div>
             </main>
         );
     }
 
+    const selectedDocument = documents.find(
+        (document) => document.id === selectedDocumentId
+    );
+
+    if (selectedDocument) {
+        return (
+            <main className="min-w-0 flex-1 overflow-y-auto p-8">
+                <DocumentViewer
+                    document={selectedDocument}
+                />
+            </main>
+        );
+    }
+
     return (
-        <main className="min-w-0 flex-1 overflow-y-auto p-6">
-            <div className="mb-6">
-                <h1 className="text-2xl font-semibold">
+        <main className="min-w-0 flex-1 overflow-y-auto p-8">
+            <div className="mb-8">
+                <h1 className="text-2xl font-semibold text-white">
                     Case Workspace
                 </h1>
 
                 <p className="mt-1 text-sm text-zinc-500">
-                    Case ID: {selectedCaseId}
+                    {documents.length}{" "}
+                    {documents.length === 1
+                        ? "document"
+                        : "documents"}
                 </p>
             </div>
 
-            <div>
-                <h2 className="mb-4 text-sm font-medium uppercase tracking-wider text-zinc-400">
-                    Documents
-                </h2>
+            {isLoading && (
+                <p className="text-sm text-zinc-500">
+                    Loading documents...
+                </p>
+            )}
 
-                {isLoading && (
-                    <p className="text-sm text-zinc-500">
-                        Loading documents...
-                    </p>
-                )}
+            {error && (
+                <p className="text-sm text-red-400">
+                    {error}
+                </p>
+            )}
 
-                {error && (
-                    <p className="text-sm text-red-400">
-                        {error}
-                    </p>
-                )}
-
-                {!isLoading && !error && (
-                    <div className="space-y-2">
-                        {documents.map((document) => (
-                            <div
-                                key={document.id}
-                                className="rounded-lg border border-zinc-800 p-4 transition hover:border-zinc-700"
-                            >
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <h3 className="font-medium">
-                                            {document.title}
-                                        </h3>
-
-                                        <p className="mt-1 text-sm text-zinc-500">
-                                            {document.description}
-                                        </p>
-                                    </div>
-
-                                    <span className="text-xs uppercase text-zinc-400">
-                                        {document.status}
-                                    </span>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </div>
+            {!isLoading && !error && (
+                <div className="space-y-3">
+                    {documents.map((document) => (
+                        <DocumentItem
+                            key={document.id}
+                            document={document}
+                        />
+                    ))}
+                </div>
+            )}
         </main>
     );
 }
