@@ -1,4 +1,4 @@
-import type { Document } from "../documents";
+import type { Document, DocumentStatus } from "../documents";
 
 const now = new Date().toISOString();
 
@@ -25,7 +25,8 @@ let mockDocuments: Document[] = [
     {
         id: "doc-2",
         title: "Bank Transaction Records",
-        description: "Transaction records related to the suspected fraudulent activity.",
+        description:
+            "Transaction records related to the suspected fraudulent activity.",
         status: "processing",
         object_key: "doc-2/bank_transaction_records.pdf",
         extracted_information: null,
@@ -84,7 +85,8 @@ let mockDocuments: Document[] = [
     {
         id: "doc-6",
         title: "Network Traffic Report",
-        description: "Analysis of network traffic captured during the incident.",
+        description:
+            "Analysis of network traffic captured during the incident.",
         status: "failed",
         object_key: "doc-6/network_traffic_report.pdf",
         extracted_information: null,
@@ -114,7 +116,8 @@ let mockDocuments: Document[] = [
     {
         id: "doc-8",
         title: "Legal Notice",
-        description: "Legal notice issued regarding the contractual dispute.",
+        description:
+            "Legal notice issued regarding the contractual dispute.",
         status: "success",
         object_key: "doc-8/legal_notice.pdf",
         extracted_information: {
@@ -131,6 +134,8 @@ let mockDocuments: Document[] = [
 const delay = (ms = 500) =>
     new Promise((resolve) => setTimeout(resolve, ms));
 
+// ─── Public service functions ─────────────────────────────────────────────────
+
 export async function getDocuments(
     caseId?: string
 ): Promise<Document[]> {
@@ -145,14 +150,10 @@ export async function getDocuments(
     );
 }
 
-export async function getDocument(
-    id: string
-): Promise<Document> {
+export async function getDocument(id: string): Promise<Document> {
     await delay();
 
-    const document = mockDocuments.find(
-        (document) => document.id === id
-    );
+    const document = mockDocuments.find((d) => d.id === id);
 
     if (!document) {
         throw new Error("Document not found");
@@ -166,21 +167,15 @@ export async function deleteDocument(
 ): Promise<{ message: string }> {
     await delay();
 
-    const exists = mockDocuments.some(
-        (document) => document.id === id
-    );
+    const exists = mockDocuments.some((d) => d.id === id);
 
     if (!exists) {
         throw new Error("Document not found");
     }
 
-    mockDocuments = mockDocuments.filter(
-        (document) => document.id !== id
-    );
+    mockDocuments = mockDocuments.filter((d) => d.id !== id);
 
-    return {
-        message: `Document ${id} deleted`,
-    };
+    return { message: `Document ${id} deleted` };
 }
 
 export async function getDownloadUrl(
@@ -188,15 +183,41 @@ export async function getDownloadUrl(
 ): Promise<{ download_url: string }> {
     await delay();
 
-    const document = mockDocuments.find(
-        (document) => document.id === id
-    );
+    const document = mockDocuments.find((d) => d.id === id);
 
     if (!document) {
         throw new Error("Document not found");
     }
 
+    // Use a real public PDF so the iframe actually renders something
     return {
-        download_url: `https://example.com/documents/${id}`,
+        download_url:
+            "https://arxiv.org/pdf/1706.03762",
     };
+}
+
+// ─── Helpers used by mock/upload.ts ──────────────────────────────────────────
+
+/** Add a document to the mock store (used when a new upload is initiated). */
+export function addMockDocument(doc: Document): void {
+    mockDocuments = [...mockDocuments, doc];
+}
+
+/** Retrieve a document synchronously (used by confirmUpload). */
+export function getMockDocument(id: string): Document {
+    const doc = mockDocuments.find((d) => d.id === id);
+    if (!doc) throw new Error("Document not found");
+    return { ...doc };
+}
+
+/** Update a document's status in-place (used by confirmUpload to simulate processing). */
+export function updateMockDocumentStatus(
+    id: string,
+    status: DocumentStatus
+): void {
+    mockDocuments = mockDocuments.map((d) =>
+        d.id === id
+            ? { ...d, status, updated_at: new Date().toISOString() }
+            : d
+    );
 }

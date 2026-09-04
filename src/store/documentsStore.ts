@@ -1,7 +1,10 @@
 import { create } from "zustand";
 
 import type { Document } from "../services/documents";
-import { getDocuments } from "../services/documents";
+import {
+    getDocuments,
+    deleteDocument as svcDeleteDocument,
+} from "../services/documents";
 
 interface DocumentsState {
     documents: Document[];
@@ -9,36 +12,40 @@ interface DocumentsState {
     error: string | null;
 
     fetchDocuments: (caseId: string) => Promise<void>;
+    deleteDocument: (id: string) => Promise<void>;
+    addDocument: (document: Document) => void;
 }
 
-export const useDocumentsStore = create<DocumentsState>(
-    (set) => ({
-        documents: [],
-        isLoading: false,
-        error: null,
+export const useDocumentsStore = create<DocumentsState>((set) => ({
+    documents: [],
+    isLoading: false,
+    error: null,
 
-        fetchDocuments: async (caseId: string) => {
+    fetchDocuments: async (caseId: string) => {
+        set({ isLoading: true, error: null });
+
+        try {
+            const documents = await getDocuments(caseId);
+            set({ documents, isLoading: false });
+        } catch (error) {
             set({
-                isLoading: true,
-                error: null,
+                isLoading: false,
+                error:
+                    error instanceof Error
+                        ? error.message
+                        : "Failed to load documents",
             });
+        }
+    },
 
-            try {
-                const documents = await getDocuments(caseId);
+    deleteDocument: async (id: string) => {
+        await svcDeleteDocument(id);
+        set((state) => ({
+            documents: state.documents.filter((d) => d.id !== id),
+        }));
+    },
 
-                set({
-                    documents,
-                    isLoading: false,
-                });
-            } catch (error) {
-                set({
-                    isLoading: false,
-                    error:
-                        error instanceof Error
-                            ? error.message
-                            : "Failed to load documents",
-                });
-            }
-        },
-    })
-);
+    addDocument: (document: Document) => {
+        set((state) => ({ documents: [...state.documents, document] }));
+    },
+}));
