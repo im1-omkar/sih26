@@ -200,7 +200,7 @@ export async function getDownloadUrl(
     // Use a real public PDF so the iframe actually renders something
     return {
         download_url:
-            "https://www.w3.org/WAI/WCAG21/wcag21.pdf",
+            "https://imgv2-1-f.scribdassets.com/img/document/407102441/original/e5460cd1ad/1?v=1",
     };
 }
 
