@@ -1,0 +1,972 @@
+# Document Management Service — Frontend Project Context
+
+## 1. Project Goal
+
+I am building the **frontend for a Document Management Service**.
+
+Tech stack:
+
+* Vite
+* React
+* TypeScript
+* Bun
+* React Router
+* Zustand
+* Tailwind CSS
+
+The backend already exists and is documented, but I don't want to wait for the backend to be fully ready.
+
+Therefore, the frontend should work against:
+
+1. A **mock/fake API**
+2. The **real backend API**
+
+The mock API should behave like the real backend as closely as possible.
+
+### Core architecture
+
+```text
+UI
+ ↓
+Zustand Store
+ ↓
+Public Service
+ ↓
+ ┌───────────────┐
+ │               │
+Mock API      Real API
+ │               │
+ └───────┬───────┘
+         ↓
+     Same contract
+```
+
+The UI should **never call `fetch()` directly**.
+
+The mock and real implementations should have the **same input/output shapes**, so switching from mock → real should not require changing UI code.
+
+---
+
+# 2. Backend
+
+The backend is an Axum + PostgreSQL + S3/MinIO service.
+
+Important backend concepts:
+
+### Case
+
+```ts
+interface Case {
+  id: string;
+  name: string;
+  created_at: string;
+  updated_at: string;
+}
+```
+
+### Document
+
+```ts
+type DocumentStatus =
+  | "pending"
+  | "processing"
+  | "success"
+  | "failed"
+  | "finish";
+
+interface Document {
+  id: string;
+  title: string;
+  description: string;
+  status: DocumentStatus;
+  object_key: string;
+  extracted_information: Record<string, unknown> | null;
+  case_id: string;
+  created_at: string;
+  updated_at: string;
+}
+```
+
+The mock `Document` must remain exactly this shape.
+
+**Do not add fields like `file_url` to the mock Document.**
+
+---
+
+# 3. Backend Endpoints
+
+### Health
+
+```text
+GET /health
+GET /api/health
+```
+
+### Documents
+
+```text
+POST   /api/documents/upload/initiate
+POST   /api/documents/upload/confirm
+
+GET    /api/documents
+GET    /api/documents/{id}
+GET    /api/documents/{id}/download
+DELETE /api/documents/{id}
+```
+
+`GET /api/documents` optionally accepts:
+
+```text
+?case_id=...
+```
+
+### Cases
+
+```text
+POST   /api/cases
+GET    /api/cases
+GET    /api/cases/{id}
+PUT    /api/cases/{id}
+DELETE /api/cases/{id}
+
+GET    /api/cases/{id}/documents
+```
+
+Errors generally look like:
+
+```json
+{
+  "error": "..."
+}
+```
+
+---
+
+# 4. Document Upload Architecture
+
+The real backend uses this flow:
+
+```text
+Frontend
+   │
+   │ 1. initiate upload
+   ▼
+Backend
+   │
+   │ creates pending document
+   │ generates presigned PUT URL
+   ▼
+Frontend
+   │
+   │ 2. upload raw file directly
+   ▼
+S3 / MinIO
+   │
+   │ 3. confirm upload
+   ▼
+Backend
+   │
+   │ updates document status
+   ▼
+Document processing
+```
+
+The presigned upload URL is temporary.
+
+The frontend should eventually simulate this lifecycle with the mock API.
+
+---
+
+# 5. Important Download/View Architecture
+
+This has **NOT been implemented yet**.
+
+The correct approach we decided on is:
+
+Do **not** put:
+
+```ts
+file_url: string
+```
+
+inside the mock `Document`.
+
+That would make the mock document shape different from the real backend response.
+
+Instead, the backend's download endpoint should be represented as a separate service operation.
+
+For example:
+
+```ts
+interface DownloadResponse {
+  url: string;
+}
+```
+
+Both mock and real implementations should return:
+
+```json
+{
+  "url": "..."
+}
+```
+
+The mock can return a fake/public PDF URL.
+
+The real implementation will eventually call:
+
+```text
+GET /api/documents/{id}/download
+```
+
+and receive the real/presigned URL.
+
+Then:
+
+```text
+User clicks document
+        ↓
+DocumentViewer
+        ↓
+getDownloadUrl(document.id)
+        ↓
+Mock OR Real API
+        ↓
+{ url: "..." }
+        ↓
+<iframe src={url} />
+        ↓
+PDF displayed
+```
+
+This is the **next thing to implement**.
+
+---
+
+# 6. Frontend Routes
+
+We deliberately keep routing minimal.
+
+```text
+/              → Landing
+/dashboard     → Dashboard
+*              → NotFound
+```
+
+We do NOT want routes such as:
+
+```text
+/cases/:id
+/documents/:id
+/upload
+```
+
+Case/document selection is internal dashboard workspace state.
+
+---
+
+# 7. Dashboard UX
+
+The dashboard is a workspace:
+
+```text
+┌──────────────┬──────────────────────────────────┐
+│              │                                  │
+│    CASES     │       MAIN WORKSPACE             │
+│              │                                  │
+│ Case A       │  Selected Case                  │
+│ Case B       │                                  │
+│ Case C       │  Documents                       │
+│              │  ┌──────────────────────────┐    │
+│ + Case       │  │ Document 1               │    │
+│              │  ├──────────────────────────┤    │
+│              │  │ Document 2               │    │
+│              │  └──────────────────────────┘    │
+│              │                                  │
+└──────────────┴──────────────────────────────────┘
+```
+
+When a case is selected:
+
+```text
+Sidebar
+   ↓
+selectedCaseId
+   ↓
+Workspace
+   ↓
+fetch documents for that case
+```
+
+When a document is selected:
+
+```text
+selectedDocumentId
+   ↓
+DocumentViewer
+```
+
+---
+
+# 8. Current Folder Structure
+
+We intentionally want a simple structure.
+
+```text
+src/
+├── assets/
+│
+├── components/
+│   ├── layout/
+│   │   ├── DashboardLayout.tsx
+│   │   ├── Navbar.tsx
+│   │   ├── Sidebar.tsx
+│   │   └── Workspace.tsx
+│   │
+│   ├── cases/
+│   │   ├── CaseList.tsx
+│   │   ├── CaseItem.tsx
+│   │   └── CaseModal.tsx
+│   │
+│   ├── documents/
+│   │   ├── DocumentList.tsx
+│   │   ├── DocumentItem.tsx
+│   │   ├── DocumentViewer.tsx
+│   │   └── DocumentDetails.tsx
+│   │
+│   ├── upload/
+│   │   ├── UploadDocument.tsx
+│   │   └── UploadProgress.tsx
+│   │
+│   └── ui/
+│       ├── Button.tsx
+│       ├── Modal.tsx
+│       ├── Loader.tsx
+│       └── StatusBadge.tsx
+│
+├── pages/
+│   ├── Landing.tsx
+│   ├── Dashboard.tsx
+│   └── NotFound.tsx
+│
+├── routes/
+│   └── AppRoutes.tsx
+│
+├── services/
+│   ├── api.ts
+│   ├── cases.ts
+│   ├── documents.ts
+│   │
+│   └── mock/
+│       ├── cases.ts
+│       └── documents.ts
+│
+├── store/
+│   ├── workspaceStore.ts
+│   ├── casesStore.ts
+│   └── documentsStore.ts
+│
+├── App.tsx
+├── main.tsx
+└── index.css
+```
+
+There may also be a root:
+
+```text
+src/config.ts
+```
+
+for environment configuration.
+
+We do **not** want to create lots of extra folders/files unless they become necessary.
+
+---
+
+# 9. Router — Already Implemented
+
+`AppRoutes.tsx`:
+
+```tsx
+import { Routes, Route } from "react-router-dom";
+import Landing from "../pages/Landing";
+import Dashboard from "../pages/Dashboard";
+import NotFound from "../pages/NotFound";
+
+export default function AppRoutes() {
+  return (
+    <Routes>
+      <Route path="/" element={<Landing />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+}
+```
+
+`main.tsx` wraps the app with:
+
+```tsx
+<BrowserRouter>
+  <App />
+</BrowserRouter>
+```
+
+---
+
+# 10. API Layer
+
+`services/api.ts` is responsible for actual HTTP requests.
+
+Current idea:
+
+```ts
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ??
+  "http://localhost:8000";
+
+export async function apiRequest<T>(
+  endpoint: string,
+  options?: RequestInit
+): Promise<T> {
+  const response = await fetch(
+    `${API_BASE_URL}${endpoint}`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+      },
+      ...options,
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response
+      .json()
+      .catch(() => ({
+        error: "Something went wrong",
+      }));
+
+    throw new Error(
+      error.error ?? "API request failed"
+    );
+  }
+
+  return response.json();
+}
+```
+
+---
+
+# 11. Mock/Real API Switching
+
+Environment variables:
+
+```env
+VITE_USE_MOCK_API=true
+VITE_API_BASE_URL=http://localhost:8000
+```
+
+Config:
+
+```ts
+export const USE_MOCK_API =
+  import.meta.env.VITE_USE_MOCK_API === "true";
+
+export const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ??
+  "http://localhost:8000";
+```
+
+The goal is:
+
+```text
+VITE_USE_MOCK_API=true
+        ↓
+Mock implementation
+
+VITE_USE_MOCK_API=false
+        ↓
+Real backend implementation
+```
+
+The UI should not know which one is active.
+
+---
+
+# 12. Case Service
+
+`services/cases.ts` contains the public Case API.
+
+It defines:
+
+```ts
+export interface Case {
+  id: string;
+  name: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateCaseInput {
+  name: string;
+}
+
+export interface UpdateCaseInput {
+  name: string;
+}
+```
+
+Public functions:
+
+```ts
+getCases()
+getCase(id)
+createCase(input)
+updateCase(id, input)
+deleteCase(id)
+```
+
+These functions choose between:
+
+```text
+mock/cases.ts
+```
+
+and:
+
+```text
+real backend
+```
+
+depending on `USE_MOCK_API`.
+
+---
+
+# 13. Mock Cases
+
+We already have three fake cases:
+
+```text
+case-1 → Financial Fraud Investigation
+case-2 → Cybercrime Investigation
+case-3 → Corporate Dispute
+```
+
+Mock API functions simulate network latency using something like:
+
+```ts
+await delay(500);
+```
+
+The mock data is mutable so CRUD operations can eventually work.
+
+---
+
+# 14. Document Service
+
+`services/documents.ts` defines the public document API.
+
+Current functions:
+
+```ts
+getDocuments(caseId?)
+getDocument(id)
+deleteDocument(id)
+getDownloadUrl(id)   // proposed, NOT implemented yet
+```
+
+The Document interface remains exactly the backend shape.
+
+The download operation should return:
+
+```ts
+interface DownloadResponse {
+  url: string;
+}
+```
+
+The mock and real implementations must return that same shape.
+
+---
+
+# 15. Mock Documents
+
+We already have 8 fake documents.
+
+### Case 1
+
+```text
+doc-1 → Police Incident Report
+         success
+
+doc-2 → Bank Transaction Records
+         processing
+
+doc-3 → Financial Statement
+         finish
+```
+
+### Case 2
+
+```text
+doc-4 → Server Logs
+         success
+
+doc-5 → Email Communications
+         processing
+
+doc-6 → Network Traffic Report
+         failed
+```
+
+### Case 3
+
+```text
+doc-7 → Contract Agreement
+         finish
+
+doc-8 → Legal Notice
+         success
+```
+
+Some documents contain fake:
+
+```ts
+extracted_information
+```
+
+while processing/failed documents can have:
+
+```ts
+extracted_information: null
+```
+
+Mock documents also simulate async API behavior.
+
+---
+
+# 16. Zustand Stores
+
+## workspaceStore
+
+Responsible for UI/workspace state:
+
+```ts
+selectedCaseId
+selectedDocumentId
+```
+
+Actions:
+
+```ts
+selectCase()
+selectDocument()
+clearCase()
+clearDocument()
+```
+
+Selecting a new case automatically clears the selected document.
+
+Conceptually:
+
+```text
+selectCase(caseId)
+    ↓
+selectedCaseId = caseId
+selectedDocumentId = null
+```
+
+---
+
+## casesStore
+
+Responsible for loading cases.
+
+State:
+
+```ts
+cases
+isLoading
+error
+```
+
+Action:
+
+```ts
+fetchCases()
+```
+
+It calls:
+
+```ts
+getCases()
+```
+
+from the public service.
+
+It should NOT directly import the mock implementation.
+
+---
+
+## documentsStore
+
+Responsible for loading documents.
+
+State:
+
+```ts
+documents
+isLoading
+error
+```
+
+Action:
+
+```ts
+fetchDocuments(caseId)
+```
+
+It calls:
+
+```ts
+getDocuments(caseId)
+```
+
+from the public service.
+
+Again, the store should not directly call the mock implementation.
+
+---
+
+# 17. Sidebar
+
+Sidebar currently:
+
+1. Loads cases through `casesStore`
+2. Displays loading/error state
+3. Displays the case list
+4. Uses `workspaceStore` for selected case
+5. Calls:
+
+```ts
+selectCase(case.id)
+```
+
+when a case is clicked.
+
+Hardcoded cases were removed.
+
+---
+
+# 18. Workspace
+
+Workspace currently:
+
+1. Reads `selectedCaseId`
+2. Reads `selectedDocumentId`
+3. Fetches documents when the selected case changes
+4. Shows "Select a case" if no case is selected
+5. Displays documents for the selected case
+6. Opens `DocumentViewer` when a document is selected
+
+Conceptually:
+
+```text
+No case
+ ↓
+"Select a case"
+
+Case selected
+ ↓
+Fetch documents
+ ↓
+Document list
+
+Document selected
+ ↓
+DocumentViewer
+```
+
+---
+
+# 19. DocumentItem
+
+`DocumentItem` represents a document in the document list.
+
+It:
+
+* Displays title
+* Displays description
+* Displays status
+* Highlights the selected document
+* Calls:
+
+```ts
+selectDocument(document.id)
+```
+
+when clicked.
+
+---
+
+# 20. Current Project State
+
+### Already implemented
+
+* Vite/React/TypeScript setup
+* Bun
+* React Router
+* Landing page
+* Dashboard page
+* Dashboard layout
+* Navbar
+* Sidebar
+* Workspace
+* Backend domain types
+* Mock cases
+* Mock documents
+* API abstraction
+* Mock/real API switching concept
+* Zustand
+* Workspace state
+* Case loading
+* Document loading
+* Case selection
+* Document selection
+* Document list
+
+### NOT implemented yet
+
+The most immediate next feature is:
+
+**Fake the document download API and display the document.**
+
+Specifically:
+
+```text
+GET /api/documents/{id}/download
+```
+
+should have a mock implementation returning:
+
+```ts
+{
+  url: string;
+}
+```
+
+The real implementation should call the actual backend endpoint and return the same shape.
+
+Then `DocumentViewer` should use that URL in an iframe.
+
+---
+
+# 21. Important Architectural Rule Going Forward
+
+Do not make the mock API "easier" than the real API by changing the data model.
+
+For example, DON'T do:
+
+```ts
+Document & {
+  file_url: string;
+}
+```
+
+just because the mock needs a URL.
+
+Instead model the actual backend operation:
+
+```text
+Document
+   ↓
+download endpoint
+   ↓
+URL
+```
+
+This keeps the frontend compatible with the real backend.
+
+---
+
+# 22. Development Philosophy
+
+I want to build this **incrementally**.
+
+Don't introduce:
+
+* unnecessary abstractions
+* excessive folders
+* complex state management
+* TanStack Query unless we actually need it
+* premature architecture
+
+Prefer:
+
+```text
+small feature
+ ↓
+make it work
+ ↓
+connect it properly
+ ↓
+move to next feature
+```
+
+The goal is a real, working frontend rather than an over-engineered architecture diagram.
+
+---
+
+# 23. Likely Next Roadmap
+
+After document viewing:
+
+```text
+1. Document viewing
+       ↓
+2. Case CRUD
+       ↓
+3. Document delete
+       ↓
+4. Upload document
+       ↓
+5. Mock upload lifecycle
+       ↓
+6. Upload progress/status
+       ↓
+7. Document processing states
+       ↓
+8. Connect real backend
+       ↓
+9. Replace mock with real API
+       ↓
+10. Polish UX/error/loading states
+```
+
+For upload, the mock should eventually simulate the real:
+
+```text
+initiate
+   ↓
+fake presigned URL
+   ↓
+fake S3 upload
+   ↓
+confirm
+   ↓
+processing
+   ↓
+success/failed
+```
+
+---
+
+## Current checkpoint
+
+**Stop here.**
+
+The last proposed code for fake document URLs + `DocumentViewer` has **NOT been implemented yet**.
+
+When continuing, start from this checkpoint and implement the download/view functionality while preserving the exact backend `Document` shape.
+

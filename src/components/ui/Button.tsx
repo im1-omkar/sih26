@@ -1,17 +1,16 @@
-import type { ButtonHTMLAttributes } from "react";
-
-type Variant = "primary" | "ghost" | "danger";
+import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-    variant?: Variant;
+    variant?: "primary" | "ghost" | "danger";
     size?: "sm" | "md";
+    children: ReactNode;
 }
 
-const variantClasses: Record<Variant, string> = {
+const variantClasses = {
     primary:
-        "bg-white text-zinc-900 hover:bg-zinc-200 disabled:opacity-50",
+        "bg-brand-600 text-white hover:bg-brand-700 disabled:opacity-50 shadow-sm",
     ghost:
-        "border border-zinc-700 text-zinc-300 hover:bg-zinc-800 disabled:opacity-50",
+        "border border-surface-300 bg-surface-0 text-surface-700 hover:bg-surface-100 disabled:opacity-50",
     danger:
         "bg-red-600 text-white hover:bg-red-700 disabled:opacity-50",
 };
@@ -31,7 +30,7 @@ export default function Button({
     return (
         <button
             type="button"
-            className={`inline-flex items-center justify-center gap-1.5 rounded-lg font-medium transition ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
+            className={`inline-flex items-center justify-center gap-1.5 rounded-lg font-semibold transition ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
             {...props}
         >
             {children}

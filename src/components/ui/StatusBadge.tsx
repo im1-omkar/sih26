@@ -10,35 +10,35 @@ const config: Record<
 > = {
     pending: {
         label: "Pending",
-        className: "bg-zinc-800 text-zinc-400",
+        className: "bg-surface-200 text-surface-600",
     },
     processing: {
         label: "Processing",
-        className: "bg-blue-900/60 text-blue-300",
+        className: "bg-blue-50 text-blue-700 ring-1 ring-blue-200",
     },
     success: {
         label: "Success",
-        className: "bg-green-900/60 text-green-300",
+        className: "bg-green-50 text-green-700 ring-1 ring-green-200",
     },
     failed: {
         label: "Failed",
-        className: "bg-red-900/60 text-red-300",
+        className: "bg-red-50 text-red-700 ring-1 ring-red-200",
     },
     finish: {
         label: "Finished",
-        className: "bg-purple-900/60 text-purple-300",
+        className: "bg-purple-50 text-purple-700 ring-1 ring-purple-200",
     },
 };
 
 export default function StatusBadge({ status }: StatusBadgeProps) {
     const { label, className } = config[status] ?? {
         label: status,
-        className: "bg-zinc-800 text-zinc-400",
+        className: "bg-surface-200 text-surface-600",
     };
 
     return (
         <span
-            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${className}`}
+            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${className}`}
         >
             {label}
         </span>

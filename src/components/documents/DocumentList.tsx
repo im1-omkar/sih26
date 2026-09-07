@@ -8,13 +8,9 @@ interface DocumentListProps {
 export default function DocumentList({ documents }: DocumentListProps) {
     if (documents.length === 0) {
         return (
-            <div className="rounded-lg border border-dashed border-zinc-800 p-10 text-center">
-                <p className="text-sm text-zinc-600">
-                    No documents in this case yet.
-                </p>
-                <p className="mt-1 text-xs text-zinc-700">
-                    Upload a document to get started.
-                </p>
+            <div className="rounded-xl border border-dashed border-surface-300 p-10 text-center">
+                <p className="text-sm font-medium text-surface-500">No documents in this case yet.</p>
+                <p className="mt-1 text-xs text-surface-400">Upload a document to get started.</p>
             </div>
         );
     }

@@ -2,18 +2,20 @@ import { USE_MOCK_API } from "../config";
 
 import * as mockUpload from "./mock/upload";
 import { apiRequest } from "./api";
-import type { Document } from "./documents";
+import type { Document, DocumentType } from "./documents";
 
 export interface InitiateUploadInput {
     case_id: string;
     title: string;
     description: string;
-    object_key: string;
+    file_name: string;
+    document_type: DocumentType;
 }
 
 export interface InitiateUploadResponse {
     document_id: string;
     upload_url: string;
+    object_key: string;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -74,14 +76,15 @@ export async function uploadToStorage(
 // ─────────────────────────────────────────────────────────────────────────────
 
 export async function confirmUpload(
-    documentId: string
+    documentId: string,
+    success: boolean
 ): Promise<Document> {
     if (USE_MOCK_API) {
-        return mockUpload.confirmUpload(documentId);
+        return mockUpload.confirmUpload(documentId, success);
     }
 
     return apiRequest<Document>("/api/documents/upload/confirm", {
         method: "POST",
-        body: JSON.stringify({ document_id: documentId }),
+        body: JSON.stringify({ document_id: documentId, success }),
     });
 }

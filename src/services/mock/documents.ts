@@ -10,6 +10,7 @@ let mockDocuments: Document[] = [
         title: "Police Incident Report",
         description: "Official incident report collected from the precinct.",
         status: "success",
+        document_type: "image",
         object_key: "doc-1/police_incident_report.pdf",
         extracted_information: {
             document_type: "Police Report",
@@ -28,6 +29,7 @@ let mockDocuments: Document[] = [
         description:
             "Transaction records related to the suspected fraudulent activity.",
         status: "processing",
+        document_type: "text",
         object_key: "doc-2/bank_transaction_records.pdf",
         extracted_information: null,
         case_id: "case-1",
@@ -40,6 +42,7 @@ let mockDocuments: Document[] = [
         title: "Financial Statement",
         description: "Financial statement submitted as supporting evidence.",
         status: "finish",
+        document_type: "text",
         object_key: "doc-3/financial_statement.pdf",
         extracted_information: {
             document_type: "Financial Statement",
@@ -59,6 +62,7 @@ let mockDocuments: Document[] = [
         title: "Server Logs",
         description: "Server access logs collected during the investigation.",
         status: "success",
+        document_type: "text",
         object_key: "doc-4/server_logs.txt",
         extracted_information: {
             document_type: "Server Logs",
@@ -75,6 +79,7 @@ let mockDocuments: Document[] = [
         title: "Email Communications",
         description: "Email correspondence between relevant individuals.",
         status: "processing",
+        document_type: "text",
         object_key: "doc-5/email_communications.pdf",
         extracted_information: null,
         case_id: "case-2",
@@ -88,6 +93,7 @@ let mockDocuments: Document[] = [
         description:
             "Analysis of network traffic captured during the incident.",
         status: "failed",
+        document_type: "text",
         object_key: "doc-6/network_traffic_report.pdf",
         extracted_information: null,
         case_id: "case-2",
@@ -102,6 +108,7 @@ let mockDocuments: Document[] = [
         title: "Contract Agreement",
         description: "Original agreement between the two parties.",
         status: "finish",
+        document_type: "image",
         object_key: "doc-7/contract_agreement.pdf",
         extracted_information: {
             document_type: "Contract",
@@ -119,6 +126,7 @@ let mockDocuments: Document[] = [
         description:
             "Legal notice issued regarding the contractual dispute.",
         status: "success",
+        document_type: "text",
         object_key: "doc-8/legal_notice.pdf",
         extracted_information: {
             document_type: "Legal Notice",
@@ -192,7 +200,7 @@ export async function getDownloadUrl(
     // Use a real public PDF so the iframe actually renders something
     return {
         download_url:
-            "https://arxiv.org/pdf/1706.03762",
+            "https://www.w3.org/WAI/WCAG21/wcag21.pdf",
     };
 }
 

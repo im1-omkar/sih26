@@ -10,11 +10,14 @@ export type DocumentStatus =
   | "failed"
   | "finish";
 
+export type DocumentType = "image" | "text" | "voice";
+
 export interface Document {
   id: string;
   title: string;
   description: string;
   status: DocumentStatus;
+  document_type: DocumentType;
   object_key: string;
   extracted_information: Record<
     string,
@@ -72,7 +75,6 @@ export async function getDownloadUrl(
   id: string
 ): Promise<{ download_url: string }> {
   if (USE_MOCK_API) {
-    // We'll implement this properly in the mock
     return mockDocuments.getDownloadUrl(id);
   }
 

@@ -1,62 +1,45 @@
 import { useState } from "react";
-
 import type { Case } from "../../services/cases";
 import Modal from "../ui/Modal";
 import Button from "../ui/Button";
 
 interface CaseModalProps {
-    /** If provided, we are editing an existing case. Otherwise creating. */
     existingCase?: Case;
     onSubmit: (name: string) => Promise<void>;
     onClose: () => void;
 }
 
-export default function CaseModal({
-    existingCase,
-    onSubmit,
-    onClose,
-}: CaseModalProps) {
+export default function CaseModal({ existingCase, onSubmit, onClose }: CaseModalProps) {
     const [name, setName] = useState(existingCase?.name ?? "");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const isEdit = !!existingCase;
+    const isEditing = Boolean(existingCase);
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-
-        const trimmed = name.trim();
-        if (!trimmed) return;
+        if (!name.trim()) return;
 
         setIsSubmitting(true);
         setError(null);
 
         try {
-            await onSubmit(trimmed);
+            await onSubmit(name.trim());
             onClose();
         } catch (err) {
-            setError(
-                err instanceof Error ? err.message : "Something went wrong"
-            );
+            setError(err instanceof Error ? err.message : "Something went wrong");
         } finally {
             setIsSubmitting(false);
         }
     }
 
     return (
-        <Modal
-            title={isEdit ? "Edit Case" : "New Case"}
-            onClose={onClose}
-        >
+        <Modal title={isEditing ? "Edit Case" : "Create Case"} onClose={onClose}>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                    <label
-                        htmlFor="case-name"
-                        className="mb-1.5 block text-sm text-zinc-400"
-                    >
-                        Case name
+                    <label htmlFor="case-name" className="mb-1.5 block text-sm font-medium text-surface-700">
+                        Case Name
                     </label>
-
                     <input
                         id="case-name"
                         type="text"
@@ -64,38 +47,23 @@ export default function CaseModal({
                         onChange={(e) => setName(e.target.value)}
                         placeholder="e.g. Financial Fraud Investigation"
                         autoFocus
-                        className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white placeholder-zinc-600 outline-none focus:border-zinc-500"
+                        className="w-full rounded-lg border border-surface-300 bg-surface-0 px-3 py-2 text-sm text-surface-900 placeholder-surface-400 outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500"
                     />
                 </div>
 
-                {error && (
-                    <p className="text-sm text-red-400">{error}</p>
-                )}
+                {error && <p className="text-sm text-red-600">{error}</p>}
 
                 <div className="flex justify-end gap-2 pt-1">
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        type="button"
-                        onClick={onClose}
-                        disabled={isSubmitting}
-                    >
+                    <Button variant="ghost" size="sm" type="button" onClick={onClose}>
                         Cancel
                     </Button>
-
                     <Button
                         variant="primary"
                         size="sm"
                         type="submit"
-                        disabled={isSubmitting || !name.trim()}
+                        disabled={!name.trim() || isSubmitting}
                     >
-                        {isSubmitting
-                            ? isEdit
-                                ? "Saving…"
-                                : "Creating…"
-                            : isEdit
-                              ? "Save"
-                              : "Create"}
+                        {isSubmitting ? "Saving…" : isEditing ? "Save" : "Create"}
                     </Button>
                 </div>
             </form>
