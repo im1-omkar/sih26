@@ -24,6 +24,7 @@ export default function DocumentViewer({ document }: DocumentViewerProps) {
 
     const [isDeleting, setIsDeleting] = useState(false);
     const [deleteError, setDeleteError] = useState<string | null>(null);
+    const [descExpanded, setDescExpanded] = useState(false);
 
     useEffect(() => {
         if (!VIEWABLE_STATUSES.has(document.status)) {
@@ -98,9 +99,19 @@ export default function DocumentViewer({ document }: DocumentViewerProps) {
                             </h1>
                         </div>
 
-                        <p className="mt-2 pl-10 text-sm text-surface-500">
-                            {document.description}
-                        </p>
+                        <div className="mt-2 pl-10 text-sm text-surface-500">
+                            <p className={descExpanded ? "" : "line-clamp-3"}>
+                                {document.description}
+                            </p>
+                            {document.description && document.description.length > 100 && (
+                                <button 
+                                    onClick={() => setDescExpanded(!descExpanded)}
+                                    className="mt-1 text-xs font-semibold text-brand-600 hover:text-brand-700"
+                                >
+                                    {descExpanded ? "Show less" : "Show more"}
+                                </button>
+                            )}
+                        </div>
                     </div>
 
                     <div className="flex shrink-0 items-center gap-3">
@@ -158,11 +169,11 @@ export default function DocumentViewer({ document }: DocumentViewerProps) {
                         )}
 
                         {downloadUrl && !urlLoading && (
-                            <div className="overflow-hidden rounded-xl border border-surface-200 shadow-sm bg-surface-0">
+                            <div className="overflow-hidden rounded-xl border border-surface-200 shadow-sm bg-surface-0 w-full aspect-[1/1.414]">
                                 <iframe
                                     src={downloadUrl}
                                     title={document.title}
-                                    className="h-[600px] w-full bg-transparent"
+                                    className="h-full w-full bg-transparent"
                                 />
                             </div>
                         )}

@@ -1,6 +1,8 @@
 import { lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import dashboardImage from "../assets/dashboard.png";
+import graphImage from "../assets/graph.png";
 
 const HeroScene = lazy(() => import("../components/landing/HeroScene"));
 
@@ -13,27 +15,58 @@ const fadeUp = {
     }),
 };
 
+const agencies = [
+    {
+        name: "CBI",
+        logo: "https://www.uxdt.nic.in/wp-content/uploads/2020/06/Preview-10.png",
+    },
+    {
+        name: "Police",
+        logo: "https://static.toiimg.com/thumb/msid-75646130,width-1280,height-720,resizemode-72/75646130.jpg",
+    },
+    {
+        name: "Cyber Crime Department",
+        logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQC6yJg0sRArBXtZJY31pwvBj_lZO0Fz_cCxqFjeYAYniiewLPKPa70rnY&s=10",
+    },
+    {
+        name: "Intelligence Bureau",
+        logo: "https://static.india.com/wp-content/uploads/2018/03/intelligence-bureau.jpg?impolicy=Medium_Resize&w=1200&h=800",
+    },
+    {
+        name: "RTO",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg",
+    },
+    {
+        name: "Financial Intelligence Unit",
+        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/4/42/Financial_Intelligence_Unit%E2%80%94India_Logo.svg/1280px-Financial_Intelligence_Unit%E2%80%94India_Logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail",
+    },
+    {
+        name: "Interpol",
+        logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQa0YiAEL8rFwAGXWTjrfFeh6pPvwXAlfhxlKNqlr6BGg&s",
+    },
+];
+
 const features = [
     {
         icon: (
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" /></svg>
         ),
-        title: "Smart Upload",
-        desc: "Upload documents with presigned URLs. Automatic validation and status tracking throughout the lifecycle.",
+        title: "Multi-Source Data Ingestion",
+        desc: "Seamlessly collect and process massive volumes of unstructured data from FIRs, CDRs, financial records, and intelligence reports.",
     },
     {
         icon: (
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7.5 3.75H6A2.25 2.25 0 0 0 3.75 6v1.5M16.5 3.75H18A2.25 2.25 0 0 1 20.25 6v1.5m0 9V18A2.25 2.25 0 0 1 18 20.25h-1.5m-9 0H6A2.25 2.25 0 0 1 3.75 18v-1.5M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
         ),
-        title: "Entity Extraction",
-        desc: "Automatically extract people, organizations, accounts, and transactions from uploaded documents.",
+        title: "AI & NLP Extraction",
+        desc: "Automatically extract critical entities such as people, organizations, vehicles, locations, and phone numbers from raw text.",
     },
     {
         icon: (
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m9.586-3.828a4.5 4.5 0 0 0-1.242-7.244l-4.5-4.5a4.5 4.5 0 0 0-6.364 6.364l1.757 1.757" /></svg>
         ),
-        title: "Relationship Graphs",
-        desc: "Visualize connections between entities with interactive knowledge graphs. Discover hidden patterns.",
+        title: "Relationship Graphing",
+        desc: "Visually map criminal networks. Discover hidden intermediaries and operational hubs that manual analysis misses.",
     },
 ];
 
@@ -48,15 +81,14 @@ export default function Landing() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                         </svg>
                     </div>
-                    <span className="text-xl font-bold tracking-tight text-surface-900">DocManager</span>
+                    <span className="text-xl font-bold tracking-tight text-surface-900">Nexus OS</span>
                 </div>
                 <div className="flex items-center gap-6">
-                    <a href="#features" className="hidden text-sm font-semibold text-surface-700 transition hover:text-brand-600 sm:block">Features</a>
                     <Link
                         to="/dashboard"
                         className="rounded bg-brand-600 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-brand-700"
                     >
-                        Try it free
+                        Dashboard
                     </Link>
                 </div>
             </nav>
@@ -78,7 +110,7 @@ export default function Landing() {
                             custom={0}
                             className="text-4xl font-extrabold leading-[1.1] tracking-tight text-surface-900 sm:text-5xl lg:text-6xl"
                         >
-                            Move fast, stay aligned, and build better <span className="text-brand-600">document graphs.</span>
+                            Uncover hidden networks with <span className="text-brand-600">AI intelligence.</span>
                         </motion.h1>
 
                         <motion.p
@@ -88,7 +120,7 @@ export default function Landing() {
                             custom={1}
                             className="mt-6 text-lg leading-relaxed text-surface-700 sm:text-xl"
                         >
-                            The #1 document intelligence tool used by teams to extract entities, map relationships, and manage cases with precision.
+                            Empowering law enforcement agencies to automatically analyze structured and unstructured crime-related data, map connections, and identify key influencers in criminal organizations.
                         </motion.p>
 
                         <motion.div
@@ -102,15 +134,8 @@ export default function Landing() {
                                 to="/dashboard"
                                 className="rounded bg-brand-600 px-8 py-3.5 text-base font-bold text-white shadow-lg shadow-brand-600/20 transition hover:bg-brand-700"
                             >
-                                Get it free
+                                Enter Dashboard
                             </Link>
-                            <a
-                                href="#features"
-                                className="flex items-center gap-2 text-base font-semibold text-surface-700 transition hover:text-brand-600"
-                            >
-                                Explore features
-                                <span aria-hidden="true">→</span>
-                            </a>
                         </motion.div>
                     </div>
 
@@ -121,16 +146,16 @@ export default function Landing() {
                         className="mt-16 lg:mt-0 lg:w-1/2"
                     >
                         <div className="relative rounded-2xl bg-white shadow-2xl ring-1 ring-surface-200/50">
-                            {/* Dummy Image for Dashboard */}
                             <img
-                                src="https://placehold.co/1200x800/f8fafc/1e293b?text=DocManager+Dashboard+Graph&font=roboto"
-                                alt="DocManager Dashboard Mockup"
+                                src={dashboardImage}
+                                alt="Dashboard Mockup"
                                 className="w-full rounded-2xl object-cover"
                             />
-                            {/* Decorative elements to look like a floating UI card */}
+
+                            {/* Decorative elements */}
                             <div className="absolute -left-8 top-1/4 hidden rounded-lg border border-surface-200 bg-white p-4 shadow-lg sm:block w-48">
                                 <div className="mb-2 flex items-center gap-3">
-                                    <div className="h-8 w-8 rounded-full bg-brand-100 flex items-center justify-center text-brand-600 font-bold">R</div>
+                                    <div className="h-8 w-8 rounded-full bg-brand-100 flex items-center justify-center text-brand-600 font-bold">Suspect</div>
                                     <div>
                                         <div className="h-2 w-16 rounded bg-surface-200"></div>
                                         <div className="mt-1 h-1.5 w-10 rounded bg-surface-100"></div>
@@ -144,8 +169,59 @@ export default function Landing() {
                 </div>
             </section>
 
+            {/* ── Marquee (Trusted Agencies) ────────── */}
+            <section className="border-y border-surface-200 bg-surface-50 py-8 overflow-hidden">
+                <div className="mx-auto max-w-[1200px] px-6 mb-4 text-center">
+                    <p className="text-sm font-semibold tracking-wider text-surface-500 uppercase">
+                        Integrating data silos across departments
+                    </p>
+                </div>
+
+                <div className="relative flex w-full overflow-hidden">
+                    <div className="animate-marquee flex whitespace-nowrap items-center">
+                        {[...agencies, ...agencies, ...agencies].map((agency, i) => (
+                            <div
+                                key={i}
+                                className="mx-8 flex h-14 w-32 shrink-0 items-center justify-center"
+                            >
+                                <img
+                                    src={agency.logo}
+                                    alt={agency.name}
+                                    title={agency.name}
+                                    className="max-h-12 max-w-28 object-contain opacity-60 grayscale transition hover:opacity-100 hover:grayscale-0"
+                                />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ── The Problem We Solve ───────────────── */}
+            <section className="py-24 bg-white">
+                <div className="mx-auto max-w-[1200px] px-6">
+                    <motion.div
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                        variants={fadeUp}
+                        custom={0}
+                        className="mb-16 max-w-3xl"
+                    >
+                        <h2 className="text-3xl font-extrabold tracking-tight text-surface-900 sm:text-4xl">
+                            The Challenge of Fragmented Intelligence
+                        </h2>
+                        <p className="mt-6 text-lg leading-relaxed text-surface-600">
+                            Modern criminal activities are increasingly organized and interconnected. Criminals operate through complex networks involving associates, intermediaries, financial channels, and hidden locations.
+                        </p>
+                        <p className="mt-4 text-lg leading-relaxed text-surface-600">
+                            While law enforcement collects vast volumes of data from FIRs, Call Detail Records (CDRs), surveillance, and social media, this intelligence is highly fragmented. Manual analysis is labor-intensive, slow, and prone to missing the critical links that connect the dots.
+                        </p>
+                    </motion.div>
+                </div>
+            </section>
+
             {/* ── Features ────────────────────────────── */}
-            <section id="features" className="py-24 bg-surface-50">
+            <section className="py-24 bg-surface-50">
                 <div className="mx-auto max-w-[1200px] px-6">
                     <motion.div
                         initial="hidden"
@@ -156,10 +232,10 @@ export default function Landing() {
                         className="mb-16 text-center max-w-3xl mx-auto"
                     >
                         <h2 className="text-3xl font-extrabold tracking-tight text-surface-900 sm:text-4xl">
-                            All your documents. All in one place.
+                            A unified analytical ecosystem
                         </h2>
                         <p className="mt-4 text-lg text-surface-600">
-                            Plan, track, and manage all your investigative work with a single, highly visual source of truth.
+                            Leveraging AI, Machine Learning, and Graph Analytics to assist investigators in mapping criminal networks.
                         </p>
                     </motion.div>
 
@@ -184,8 +260,8 @@ export default function Landing() {
                     </div>
                 </div>
             </section>
-            
-            {/* ── Secondary Screenshot Section ───────────────── */}
+
+            {/* ── Visual Insights Section ───────────────── */}
             <section className="py-24 bg-white">
                 <div className="mx-auto max-w-[1200px] px-6 lg:flex lg:items-center lg:gap-16">
                     <motion.div
@@ -197,13 +273,13 @@ export default function Landing() {
                     >
                         <div className="overflow-hidden rounded-2xl shadow-xl ring-1 ring-surface-200">
                             <img
-                                src="https://placehold.co/1000x800/eff6ff/1d4ed8?text=Entity+Extraction+Pipeline&font=roboto"
-                                alt="Entity Extraction Flow"
+                                src={graphImage}
+                                alt="Network Graph Visualization"
                                 className="w-full object-cover"
                             />
                         </div>
                     </motion.div>
-                    
+
                     <motion.div
                         initial="hidden"
                         whileInView="visible"
@@ -213,59 +289,35 @@ export default function Landing() {
                         className="mt-12 lg:mt-0 lg:w-1/2"
                     >
                         <h2 className="text-3xl font-extrabold tracking-tight text-surface-900 sm:text-4xl">
-                            Connect the dots seamlessly
+                            Identify Key Influencers Instantly
                         </h2>
                         <p className="mt-6 text-lg leading-relaxed text-surface-600">
-                            Every document you upload is automatically processed. We extract key entities—people, organizations, transactions—and build a living network graph. Focus on the insights, not the manual data entry.
+                            Our system doesn't just extract data—it understands it. By detecting suspicious patterns and unusual activities across fragmented datasets, we provide actionable, visual intelligence for active investigations.
                         </p>
+
                         <ul className="mt-8 space-y-4">
                             <li className="flex items-start gap-3">
                                 <div className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-600">
                                     <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                                 </div>
                                 <div>
-                                    <h4 className="font-bold text-surface-900">Automated processing</h4>
-                                    <p className="text-surface-600">Presigned S3 uploads trigger immediate analysis.</p>
+                                    <h4 className="font-bold text-surface-900">Pattern Detection</h4>
+                                    <p className="text-surface-600">Flag suspicious transactions and communications automatically.</p>
                                 </div>
                             </li>
+
                             <li className="flex items-start gap-3">
                                 <div className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-600">
                                     <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                                 </div>
                                 <div>
-                                    <h4 className="font-bold text-surface-900">Visual discovery</h4>
-                                    <p className="text-surface-600">Interactive D3 force graphs make hidden links obvious.</p>
+                                    <h4 className="font-bold text-surface-900">Actionable Intelligence</h4>
+                                    <p className="text-surface-600">Generate insights to help dismantle organized networks effectively.</p>
                                 </div>
                             </li>
                         </ul>
                     </motion.div>
                 </div>
-            </section>
-
-            {/* ── CTA ─────────────────────────────────── */}
-            <section className="bg-brand-600 py-20 text-center relative overflow-hidden">
-                <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8)_0%,transparent_100%)]"></div>
-                <motion.div
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true }}
-                    variants={fadeUp}
-                    custom={0}
-                    className="relative z-10 mx-auto max-w-3xl px-6"
-                >
-                    <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-                        Join the teams building the future
-                    </h2>
-                    <p className="mt-6 text-xl text-brand-100">
-                        Get started with DocManager today and revolutionize your workflow.
-                    </p>
-                    <Link
-                        to="/dashboard"
-                        className="mt-8 inline-block rounded bg-white px-8 py-3.5 text-base font-bold text-brand-600 shadow-md transition hover:bg-surface-50"
-                    >
-                        Get it free
-                    </Link>
-                </motion.div>
             </section>
 
             {/* ── Footer ──────────────────────────────── */}
@@ -277,13 +329,14 @@ export default function Landing() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                             </svg>
                         </div>
-                        <span className="text-sm font-semibold text-white">DocManager</span>
+                        <span className="text-sm font-semibold text-white">Nexus OS</span>
                     </div>
                     <p className="text-sm">
-                        &copy; {new Date().getFullYear()} DocManager Platform.
+                        &copy; {new Date().getFullYear()} Advanced Intelligence Platform.
                     </p>
                 </div>
             </footer>
         </div>
     );
 }
+

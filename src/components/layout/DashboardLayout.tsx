@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useWorkspaceStore } from "../../store/workspaceStore";
 import { useDocumentsStore } from "../../store/documentsStore";
 import Navbar from "./Navbar";
@@ -13,6 +13,36 @@ export default function DashboardLayout() {
 
     const [leftOpen, setLeftOpen] = useState(true);
     const [rightOpen, setRightOpen] = useState(false);
+    
+    // Resizing logic for right panel
+    const [rightWidth, setRightWidth] = useState(500);
+    const isDraggingRef = useRef(false);
+
+    useEffect(() => {
+        const handleMouseMove = (e: MouseEvent) => {
+            if (!isDraggingRef.current) return;
+            // Calculate new width: window.innerWidth - mouseX
+            const newWidth = window.innerWidth - e.clientX;
+            // Min 300px, max 900px or 80% of window
+            if (newWidth > 300 && newWidth < window.innerWidth * 0.8) {
+                setRightWidth(newWidth);
+            }
+        };
+
+        const handleMouseUp = () => {
+            if (isDraggingRef.current) {
+                isDraggingRef.current = false;
+                document.body.style.cursor = '';
+            }
+        };
+
+        document.addEventListener("mousemove", handleMouseMove);
+        document.addEventListener("mouseup", handleMouseUp);
+        return () => {
+            document.removeEventListener("mousemove", handleMouseMove);
+            document.removeEventListener("mouseup", handleMouseUp);
+        };
+    }, []);
 
     // Auto-open the document panel when a document is selected
     useEffect(() => {
@@ -60,13 +90,26 @@ export default function DashboardLayout() {
                 </div>
 
                 {/* Right Panel: Document Viewer */}
-                <div className={`transition-all duration-300 ease-in-out border-l border-surface-200 shadow-sm bg-white flex shrink-0 ${rightOpen && selectedDocument ? 'w-[500px] opacity-100' : 'w-0 opacity-0 overflow-hidden border-none'}`}>
-                    <div className="w-[500px] flex shrink-0 h-full p-4 overflow-y-auto">
-                        {selectedDocument ? (
-                            <DocumentViewer document={selectedDocument} />
-                        ) : null}
-                    </div>
-                </div>
+                {rightOpen && selectedDocument && (
+                    <>
+                        {/* Resizer Handle */}
+                        <div 
+                            className="w-1.5 cursor-col-resize hover:bg-brand-400 active:bg-brand-500 z-10 transition-colors"
+                            onMouseDown={() => {
+                                isDraggingRef.current = true;
+                                document.body.style.cursor = 'col-resize';
+                            }}
+                        />
+                        <div 
+                            style={{ width: rightWidth }}
+                            className="bg-white flex shrink-0 border-l border-surface-200 shadow-sm"
+                        >
+                            <div className="w-full flex shrink-0 h-full p-0 overflow-hidden">
+                                <DocumentViewer document={selectedDocument} />
+                            </div>
+                        </div>
+                    </>
+                )}
             </div>
         </div>
     );
