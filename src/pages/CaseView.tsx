@@ -319,15 +319,15 @@ export default function CaseView() {
                                 <h2 className="text-base font-bold text-surface-900">{activeSection}</h2>
                             </div>
                             <div className="flex-1 relative bg-surface-50/50">
-                                {activeSection === "GNN Output" && <NetworkGraph data={{ nodes: MOCK_GNN_DATA.elements.nodes.map(n => n.data), edges: MOCK_GNN_DATA.elements.edges.map(e => e.data) }} onNodeClick={(id) => handleNodeSelect(MOCK_GNN_DATA.elements.nodes.find(n => n.data.id === id)?.data)} />}
+                                {activeSection === "GNN Output" && <NetworkGraph theme="digital" data={{ nodes: MOCK_GNN_DATA.elements.nodes.map(n => n.data), edges: MOCK_GNN_DATA.elements.edges.map(e => e.data) }} onNodeClick={(id) => handleNodeSelect(MOCK_GNN_DATA.elements.nodes.find(n => n.data.id === id)?.data)} />}
                                 {activeSection === "Geo-Location" && <GeoLocationView onSelect={handleNodeSelect} />}
                                 {activeSection === "Timelines of Crime" && <TimelineView onSelect={handleNodeSelect} />}
                                 {activeSection === "Identity Resolution" && <IdentityResolutionView />}
                                 
-                                {activeSection === "Financial Tracing" && <NetworkGraph data={mockFinancialTracing} onNodeClick={(id) => handleNodeSelect(mockFinancialTracing.nodes.find(n => n.id === id))} />}
-                                {activeSection === "Digital Forensics" && <NetworkGraph data={mockDigitalForensics} onNodeClick={(id) => handleNodeSelect(mockDigitalForensics.nodes.find(n => n.id === id))} />}
-                                {activeSection === "Communication Analysis" && <NetworkGraph data={mockCommunicationAnalysis} onNodeClick={(id) => handleNodeSelect(mockCommunicationAnalysis.nodes.find(n => n.id === id))} />}
-                                {activeSection === "Forensic Evidence" && <NetworkGraph data={mockForensicEvidence} onNodeClick={(id) => handleNodeSelect(mockForensicEvidence.nodes.find(n => n.id === id))} />}
+                                {activeSection === "Financial Tracing" && <NetworkGraph theme="financial" data={mockFinancialTracing} onNodeClick={(id) => handleNodeSelect(mockFinancialTracing.nodes.find(n => n.id === id))} />}
+                                {activeSection === "Digital Forensics" && <NetworkGraph theme="digital" data={mockDigitalForensics} onNodeClick={(id) => handleNodeSelect(mockDigitalForensics.nodes.find(n => n.id === id))} />}
+                                {activeSection === "Communication Analysis" && <NetworkGraph theme="communication" data={mockCommunicationAnalysis} onNodeClick={(id) => handleNodeSelect(mockCommunicationAnalysis.nodes.find(n => n.id === id))} />}
+                                {activeSection === "Forensic Evidence" && <NetworkGraph theme="evidence" data={mockForensicEvidence} onNodeClick={(id) => handleNodeSelect(mockForensicEvidence.nodes.find(n => n.id === id))} />}
                             </div>
                         </div>
                     </div>

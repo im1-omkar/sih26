@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { useWorkspaceStore } from "../../store/workspaceStore";
 import type { Case } from "../../services/cases";
 
@@ -10,6 +11,7 @@ interface CaseItemProps {
 export default function CaseItem({ caseItem, onEdit, onDelete }: CaseItemProps) {
     const selectedCaseId = useWorkspaceStore((state) => state.selectedCaseId);
     const selectCase = useWorkspaceStore((state) => state.selectCase);
+    const navigate = useNavigate();
 
     const isSelected = selectedCaseId === caseItem.id;
 
@@ -37,7 +39,7 @@ export default function CaseItem({ caseItem, onEdit, onDelete }: CaseItemProps) 
             <div className={`flex shrink-0 items-center gap-0.5 ${isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>
                 <button
                     type="button"
-                    onClick={(e) => { e.stopPropagation(); window.location.href = `/cases/${caseItem.id}`; }}
+                    onClick={(e) => { e.stopPropagation(); navigate(`/cases/${caseItem.id}`); }}
                     title="Open Detailed View"
                     className="flex h-6 w-6 items-center justify-center rounded text-brand-600 hover:bg-brand-100"
                 >

@@ -32,11 +32,14 @@ interface UploadDocumentProps {
     onClose: () => void;
 }
 
+import { useNavigate } from "react-router-dom";
+
 export default function UploadDocument({
     caseId,
     onUploaded,
     onClose,
 }: UploadDocumentProps) {
+    const navigate = useNavigate();
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [documentType, setDocumentType] = useState<DocumentType>("text");
@@ -90,6 +93,11 @@ export default function UploadDocument({
 
             await new Promise((r) => setTimeout(r, 800));
             setStage("done");
+            
+            // Redirect to case after 2 seconds
+            setTimeout(() => {
+                navigate(`/cases/${caseId}`);
+            }, 2000);
         } catch (err) {
             setStage("error");
             setError(

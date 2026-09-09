@@ -21,29 +21,65 @@ interface NetworkLink extends SimulationLinkDatum<NetworkNode> {
 }
 
 interface NetworkGraphProps {
-    data: { nodes: any[]; edges: any[] };
-    onNodeClick?: (nodeId: string) => void;
+    data: {
+        nodes: any[];
+        edges: any[];
+    };
+    onNodeClick: (nodeId: string) => void;
+    theme?: "financial" | "digital" | "communication" | "evidence" | "default";
 }
 
-const TYPE_COLORS: Record<string, { fill: string; stroke: string }> = {
-    person: { fill: "#3b82f6", stroke: "#2563eb" },
-    phone: { fill: "#8b5cf6", stroke: "#7c3aed" },
-    company: { fill: "#f59e0b", stroke: "#d97706" },
-    bank_account: { fill: "#10b981", stroke: "#059669" },
-    wallet: { fill: "#ec4899", stroke: "#db2777" },
-    device: { fill: "#6366f1", stroke: "#4f46e5" },
-    file: { fill: "#14b8a6", stroke: "#0d9488" },
-    deleted_file: { fill: "#ef4444", stroke: "#dc2626" },
-    application: { fill: "#f43f5e", stroke: "#e11d48" },
-    location: { fill: "#84cc16", stroke: "#65a30d" },
-    evidence: { fill: "#f97316", stroke: "#ea580c" },
-    object: { fill: "#64748b", stroke: "#475569" },
-    default: { fill: "#94a3b8", stroke: "#64748b" }
+const THEME_COLORS: Record<string, Record<string, { fill: string; stroke: string }>> = {
+    financial: {
+        company: { fill: "#059669", stroke: "#047857" }, // deep green
+        bank_account: { fill: "#10b981", stroke: "#059669" }, // emerald
+        person: { fill: "#34d399", stroke: "#10b981" }, // light green
+        phone: { fill: "#059669", stroke: "#047857" },
+        wallet: { fill: "#047857", stroke: "#064e3b" }, // dark green
+        device: { fill: "#6ee7b7", stroke: "#34d399" },
+        default: { fill: "#10b981", stroke: "#059669" }
+    },
+    digital: {
+        company: { fill: "#0284c7", stroke: "#0369a1" }, // sky
+        bank_account: { fill: "#0ea5e9", stroke: "#0284c7" },
+        person: { fill: "#38bdf8", stroke: "#0ea5e9" },
+        phone: { fill: "#0ea5e9", stroke: "#0284c7" },
+        wallet: { fill: "#0369a1", stroke: "#075985" },
+        device: { fill: "#0284c7", stroke: "#0369a1" },
+        default: { fill: "#38bdf8", stroke: "#0ea5e9" }
+    },
+    communication: {
+        company: { fill: "#7c3aed", stroke: "#6d28d9" }, // violet
+        bank_account: { fill: "#8b5cf6", stroke: "#7c3aed" },
+        person: { fill: "#a78bfa", stroke: "#8b5cf6" },
+        phone: { fill: "#6d28d9", stroke: "#5b21b6" },
+        wallet: { fill: "#5b21b6", stroke: "#4c1d95" },
+        device: { fill: "#8b5cf6", stroke: "#7c3aed" },
+        default: { fill: "#a78bfa", stroke: "#8b5cf6" }
+    },
+    evidence: {
+        company: { fill: "#d97706", stroke: "#b45309" }, // amber
+        bank_account: { fill: "#f59e0b", stroke: "#d97706" },
+        person: { fill: "#fbbf24", stroke: "#f59e0b" },
+        phone: { fill: "#b45309", stroke: "#92400e" },
+        wallet: { fill: "#92400e", stroke: "#78350f" },
+        device: { fill: "#f59e0b", stroke: "#d97706" },
+        default: { fill: "#fbbf24", stroke: "#f59e0b" }
+    },
+    default: {
+        company: { fill: "#f59e0b", stroke: "#d97706" }, 
+        bank_account: { fill: "#10b981", stroke: "#059669" }, 
+        person: { fill: "#3b82f6", stroke: "#2563eb" }, 
+        phone: { fill: "#8b5cf6", stroke: "#7c3aed" }, 
+        wallet: { fill: "#f43f5e", stroke: "#e11d48" }, 
+        device: { fill: "#64748b", stroke: "#475569" }, 
+        default: { fill: "#94a3b8", stroke: "#64748b" }
+    }
 };
 
 const NODE_RADIUS = 24;
 
-export default function NetworkGraph({ data, onNodeClick }: NetworkGraphProps) {
+export default function NetworkGraph({ data, onNodeClick, theme = "default" }: NetworkGraphProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -170,7 +206,7 @@ export default function NetworkGraph({ data, onNodeClick }: NetworkGraphProps) {
             if (node.x == null || node.y == null) continue;
 
             const isHovered = hoveredRef.current === node.id;
-            const colors = TYPE_COLORS[node.type] || TYPE_COLORS.default;
+            const colors = THEME_COLORS[theme][node.type] || THEME_COLORS[theme].default;
 
             ctx.save();
             ctx.translate(node.x, node.y);
@@ -255,7 +291,7 @@ export default function NetworkGraph({ data, onNodeClick }: NetworkGraphProps) {
         }
 
         ctx.restore();
-    }, []);
+    }, [theme]);
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -306,7 +342,7 @@ export default function NetworkGraph({ data, onNodeClick }: NetworkGraphProps) {
         const node = hitTest(x, y);
 
         if (canvasRef.current) {
-            canvasRef.current.style.cursor = node && onNodeClick ? "pointer" : "default";
+            canvasRef.current.style.cursor = node ? "pointer" : "default";
         }
 
         if (node?.id !== hoveredRef.current) {
@@ -317,7 +353,6 @@ export default function NetworkGraph({ data, onNodeClick }: NetworkGraphProps) {
     };
 
     const handleClick = (e: React.MouseEvent) => {
-        if (!onNodeClick) return;
         const rect = canvasRef.current?.getBoundingClientRect();
         if (!rect) return;
         const x = e.clientX - rect.left;
