@@ -26,6 +26,34 @@ export default function DocumentViewer({ document }: DocumentViewerProps) {
     const [deleteError, setDeleteError] = useState<string | null>(null);
     const [descExpanded, setDescExpanded] = useState(false);
 
+    const [isExtracting, setIsExtracting] = useState(false);
+    const [displayedExtraction, setDisplayedExtraction] = useState("");
+
+    // Reset extraction view when document changes
+    useEffect(() => {
+        setDisplayedExtraction("");
+        setIsExtracting(false);
+    }, [document.id]);
+
+    const handleExtractAnimation = () => {
+        if (!document.extracted_information) return;
+        setIsExtracting(true);
+        setDisplayedExtraction("");
+        
+        const fullText = JSON.stringify(document.extracted_information, null, 2);
+        let currentIndex = 0;
+        
+        const interval = setInterval(() => {
+            if (currentIndex <= fullText.length) {
+                setDisplayedExtraction(fullText.slice(0, currentIndex));
+                currentIndex += Math.floor(Math.random() * 3) + 1; // type 1-3 chars at a time
+            } else {
+                clearInterval(interval);
+                setIsExtracting(false);
+            }
+        }, 10);
+    };
+
     useEffect(() => {
         if (!VIEWABLE_STATUSES.has(document.status)) {
             setDownloadUrl(null);
@@ -232,14 +260,30 @@ export default function DocumentViewer({ document }: DocumentViewerProps) {
 
                 {/* Extracted information */}
                 <section>
-                    <h2 className="mb-4 text-xs font-bold uppercase tracking-wider text-surface-500">
-                        Extracted Information
-                    </h2>
+                    <div className="mb-4 flex items-center justify-between">
+                        <h2 className="text-xs font-bold uppercase tracking-wider text-surface-500">
+                            Extracted Information
+                        </h2>
+                        {document.extracted_information && (
+                            <button
+                                onClick={handleExtractAnimation}
+                                disabled={isExtracting}
+                                className="flex items-center gap-1.5 rounded bg-brand-50 px-2 py-1 text-xs font-semibold text-brand-600 transition hover:bg-brand-100 disabled:opacity-50"
+                            >
+                                <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
+                                {isExtracting ? "Extracting..." : "Run AI Extraction"}
+                            </button>
+                        )}
+                    </div>
 
                     {document.extracted_information ? (
-                        <pre className="overflow-x-auto rounded-xl border border-surface-200 bg-surface-100 p-4 text-sm text-surface-700">
-                            {JSON.stringify(document.extracted_information, null, 2)}
-                        </pre>
+                        <div className="relative overflow-x-auto rounded-xl border border-surface-200 bg-surface-100 p-4 font-mono text-sm text-surface-700 shadow-inner">
+                            {displayedExtraction ? (
+                                <pre>{displayedExtraction}{isExtracting && <span className="animate-pulse">_</span>}</pre>
+                            ) : (
+                                <div className="text-surface-400 italic">Click 'Run AI Extraction' to view parsed entities...</div>
+                            )}
+                        </div>
                     ) : (
                         <div className="rounded-xl border border-surface-200 bg-surface-100 p-6 text-sm text-surface-500">
                             {document.status === "processing"

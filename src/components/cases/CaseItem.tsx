@@ -37,6 +37,14 @@ export default function CaseItem({ caseItem, onEdit, onDelete }: CaseItemProps) 
             <div className={`flex shrink-0 items-center gap-0.5 ${isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>
                 <button
                     type="button"
+                    onClick={(e) => { e.stopPropagation(); window.location.href = `/cases/${caseItem.id}`; }}
+                    title="Open Detailed View"
+                    className="flex h-6 w-6 items-center justify-center rounded text-brand-600 hover:bg-brand-100"
+                >
+                    <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
+                </button>
+                <button
+                    type="button"
                     onClick={(e) => { e.stopPropagation(); onEdit(caseItem); }}
                     title="Edit"
                     className="flex h-6 w-6 items-center justify-center rounded text-surface-400 hover:bg-surface-200 hover:text-surface-700"
