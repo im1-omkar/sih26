@@ -103,7 +103,7 @@ export default function Landing() {
                             />
                         </svg>
                     </div>
-                    <span className="text-xl font-bold tracking-tight text-surface-900">Crime Investigation</span>
+                    <span className="text-3xl font-bold tracking-tight text-surface-900">AstraX</span>
                 </div>
                 <div className="flex items-center gap-6">
                     <Link
@@ -210,7 +210,7 @@ export default function Landing() {
                                     src={agency.logo}
                                     alt={agency.name}
                                     title={agency.name}
-                                    className="max-h-12 max-w-28 object-contain opacity-60 grayscale transition hover:opacity-100 hover:grayscale-0"
+                                    className="max-h-12 max-w-28 object-contain opacity-60  transition hover:opacity-100 hover:grayscale-0"
                                 />
                             </div>
                         ))}
