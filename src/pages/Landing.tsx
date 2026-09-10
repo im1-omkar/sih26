@@ -132,7 +132,9 @@ export default function Landing() {
                             custom={0}
                             className="text-4xl font-extrabold leading-[1.1] tracking-tight text-surface-900 sm:text-5xl lg:text-6xl"
                         >
-                            Uncover hidden networks with <span className="text-brand-600">AI intelligence.</span>
+                            Digital Forensics & 
+                            
+                            <span className="text-brand-600"> Threat Intelligence.</span>
                         </motion.h1>
 
                         <motion.p
