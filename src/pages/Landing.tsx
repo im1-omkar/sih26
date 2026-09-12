@@ -15,36 +15,27 @@ const fadeUp = {
     }),
 };
 
-const agencies = [
-    { name: "CBI", logo: "https://www.uxdt.nic.in/wp-content/uploads/2020/06/Preview-10.png" },
-    { name: "Police", logo: "https://static.toiimg.com/thumb/msid-75646130,width-1280,height-720,resizemode-72/75646130.jpg" },
-    { name: "Cyber Crime Department", logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQC6yJg0sRArBXtZJY31pwvBj_lZO0Fz_cCxqFjeYAYniiewLPKPa70rnY&s=10" },
-    { name: "Intelligence Bureau", logo: "https://static.india.com/wp-content/uploads/2018/03/intelligence-bureau.jpg?impolicy=Medium_Resize&w=1200&h=800" },
-    { name: "Financial Intelligence Unit", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/4/42/Financial_Intelligence_Unit%E2%80%94India_Logo.svg/1280px-Financial_Intelligence_Unit%E2%80%94India_Logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail" },
-    { name: "Interpol", logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQa0YiAEL8rFwAGXWTjrfFeh6pPvwXAlfhxlKNqlr6BGg&s" },
-];
-
 const features = [
     {
         icon: (
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" /></svg>
         ),
-        title: "Evidentiary Data Ingestion",
-        desc: "Securely upload and parse unstructured Call Detail Records (CDRs), financial ledgers, and FIRs maintaining strict cryptographic chain of custody.",
+        title: "Multi-Source Data Ingestion",
+        desc: "Securely upload and parse unstructured records, ledgers, and documents while maintaining strict data integrity.",
     },
     {
         icon: (
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7.5 3.75H6A2.25 2.25 0 0 0 3.75 6v1.5M16.5 3.75H18A2.25 2.25 0 0 1 20.25 6v1.5m0 9V18A2.25 2.25 0 0 1 18 20.25h-1.5m-9 0H6A2.25 2.25 0 0 1 3.75 18v-1.5M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
         ),
-        title: "Threat Actor Profiling",
-        desc: "Automatically correlate identifiers across datasets to build comprehensive profiles of suspects, alias networks, and associated vehicles.",
+        title: "Entity Correlation & Profiling",
+        desc: "Automatically correlate identifiers across datasets to build comprehensive profiles of entities, alias networks, and associated assets.",
     },
     {
         icon: (
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m9.586-3.828a4.5 4.5 0 0 0-1.242-7.244l-4.5-4.5a4.5 4.5 0 0 0-6.364 6.364l1.757 1.757" /></svg>
         ),
-        title: "Forensic Link Analysis",
-        desc: "Deploy advanced Graph Neural Networks to expose hidden syndicate hierarchies, money laundering loops, and illicit communication hubs.",
+        title: "Advanced Link Analysis",
+        desc: "Deploy advanced Graph Neural Networks to expose hidden hierarchies, complex loops, and communication hubs.",
     },
 ];
 
@@ -111,7 +102,7 @@ export default function Landing() {
                         to="/dashboard"
                         className="rounded bg-brand-600 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-brand-700"
                     >
-                        Dashboard
+                        Go to Dashboard
                     </Link>
                 </div>
             </nav>
@@ -133,9 +124,7 @@ export default function Landing() {
                             custom={0}
                             className="text-4xl font-extrabold leading-[1.1] tracking-tight text-surface-900 sm:text-5xl lg:text-6xl"
                         >
-                            Digital Forensics & 
-                            
-                            <span className="text-brand-600"> Threat Intelligence.</span>
+                            Advanced Data Analytics & <span className="text-brand-600">Graph Intelligence.</span>
                         </motion.h1>
 
                         <motion.p
@@ -145,7 +134,7 @@ export default function Landing() {
                             custom={1}
                             className="mt-6 text-lg leading-relaxed text-surface-700 sm:text-xl"
                         >
-                            Empowering law enforcement agencies to automatically analyze structured and unstructured crime-related data, map connections, and identify key influencers in criminal organizations.
+                            A scalable platform to automatically analyze structured and unstructured data, map connections, and visualize complex networks for enterprise intelligence.
                         </motion.p>
 
                         <motion.div
@@ -159,7 +148,7 @@ export default function Landing() {
                                 to="/dashboard"
                                 className="rounded bg-brand-600 px-8 py-3.5 text-base font-bold text-white shadow-lg shadow-brand-600/20 transition hover:bg-brand-700"
                             >
-                                Enter Dashboard
+                                Access Platform
                             </Link>
                         </motion.div>
                     </div>
@@ -180,7 +169,7 @@ export default function Landing() {
                             {/* Decorative elements */}
                             <div className="absolute -left-8 top-1/4 hidden rounded-lg border border-surface-200 bg-white p-4 shadow-lg sm:block w-48">
                                 <div className="mb-2 flex items-center gap-3">
-                                    <div className="h-8 w-8 rounded-full bg-brand-100 flex items-center justify-center text-brand-600 font-bold">Suspect</div>
+                                    <div className="h-8 w-8 rounded-full bg-brand-100 flex items-center justify-center text-brand-600 font-bold">Node</div>
                                     <div>
                                         <div className="h-2 w-16 rounded bg-surface-200"></div>
                                         <div className="mt-1 h-1.5 w-10 rounded bg-surface-100"></div>
@@ -194,29 +183,26 @@ export default function Landing() {
                 </div>
             </section>
 
-            {/* ── Marquee (Trusted Agencies) ────────── */}
-            <section className="border-y border-surface-200 bg-surface-50 py-8 overflow-hidden">
-                <div className="mx-auto max-w-[1200px] px-6 mb-4 text-center">
-                    <p className="text-sm font-semibold tracking-wider text-surface-500 uppercase">
-                        Integrating data silos across departments
-                    </p>
-                </div>
-
+            {/* ── Marquee (Tech Buzzwords) ────────── */}
+            <section className="border-y border-surface-200 bg-surface-50 py-12 overflow-hidden">
                 <div className="relative flex w-full overflow-hidden">
-                    <div className="animate-marquee flex whitespace-nowrap items-center">
-                        {[...agencies, ...agencies, ...agencies].map((agency, i) => (
-                            <div
-                                key={i}
-                                className="mx-8 flex h-14 w-32 shrink-0 items-center justify-center"
-                            >
-                                <img
-                                    src={agency.logo}
-                                    alt={agency.name}
-                                    title={agency.name}
-                                    className="max-h-12 max-w-28 object-contain opacity-60  transition hover:opacity-100 hover:grayscale-0"
-                                />
-                            </div>
-                        ))}
+                    <div className="animate-marquee flex whitespace-nowrap items-center text-xl font-bold text-surface-400 uppercase tracking-widest">
+                        <span className="mx-8">Advanced Graph Analytics</span>
+                        <span className="mx-8">•</span>
+                        <span className="mx-8">Real-Time Processing</span>
+                        <span className="mx-8">•</span>
+                        <span className="mx-8">Scalable Architecture</span>
+                        <span className="mx-8">•</span>
+                        <span className="mx-8">Enterprise Security</span>
+                        <span className="mx-8">•</span>
+                        <span className="mx-8">Advanced Graph Analytics</span>
+                        <span className="mx-8">•</span>
+                        <span className="mx-8">Real-Time Processing</span>
+                        <span className="mx-8">•</span>
+                        <span className="mx-8">Scalable Architecture</span>
+                        <span className="mx-8">•</span>
+                        <span className="mx-8">Enterprise Security</span>
+                        <span className="mx-8">•</span>
                     </div>
                 </div>
             </section>
@@ -233,13 +219,13 @@ export default function Landing() {
                         className="mb-16 max-w-3xl"
                     >
                         <h2 className="text-3xl font-extrabold tracking-tight text-surface-900 sm:text-4xl">
-                            The Challenge of Fragmented Intelligence
+                            The Challenge of Fragmented Data
                         </h2>
                         <p className="mt-6 text-lg leading-relaxed text-surface-600">
-                            Modern criminal activities are increasingly organized and interconnected. Criminals operate through complex networks involving associates, intermediaries, financial channels, and hidden locations.
+                            Modern data is increasingly vast and interconnected. Organizations operate through complex networks involving associates, intermediaries, financial channels, and diverse locations.
                         </p>
                         <p className="mt-4 text-lg leading-relaxed text-surface-600">
-                            While law enforcement collects vast volumes of data from FIRs, Call Detail Records (CDRs), surveillance, and social media, this intelligence is highly fragmented. Manual analysis is labor-intensive, slow, and prone to missing the critical links that connect the dots.
+                            While teams collect vast volumes of data from documents, logs, and public media, this information is highly fragmented. Manual analysis is labor-intensive, slow, and prone to missing the critical links that connect the dots.
                         </p>
                     </motion.div>
                 </div>
@@ -260,7 +246,7 @@ export default function Landing() {
                             A unified analytical ecosystem
                         </h2>
                         <p className="mt-4 text-lg text-surface-600">
-                            Leveraging AI, Machine Learning, and Graph Analytics to assist investigators in mapping criminal networks.
+                            Leveraging AI, Machine Learning, and Graph Analytics to assist teams in mapping complex networks.
                         </p>
                     </motion.div>
 
@@ -314,10 +300,10 @@ export default function Landing() {
                         className="mt-12 lg:mt-0 lg:w-1/2"
                     >
                         <h2 className="text-3xl font-extrabold tracking-tight text-surface-900 sm:text-4xl">
-                            Identify Key Influencers Instantly
+                            Identify Key Nodes Instantly
                         </h2>
                         <p className="mt-6 text-lg leading-relaxed text-surface-600">
-                            Our system doesn't just extract data—it understands it. By detecting suspicious patterns and unusual activities across fragmented datasets, we provide actionable, visual intelligence for active investigations.
+                            Our system doesn't just extract data—it understands it. By detecting patterns and unusual activities across fragmented datasets, we provide actionable, visual intelligence for complex analysis.
                         </p>
 
                         <ul className="mt-8 space-y-4">
@@ -327,7 +313,7 @@ export default function Landing() {
                                 </div>
                                 <div>
                                     <h4 className="font-bold text-surface-900">Pattern Detection</h4>
-                                    <p className="text-surface-600">Flag suspicious transactions and communications automatically.</p>
+                                    <p className="text-surface-600">Flag unusual transactions and communications automatically.</p>
                                 </div>
                             </li>
 
@@ -337,7 +323,7 @@ export default function Landing() {
                                 </div>
                                 <div>
                                     <h4 className="font-bold text-surface-900">Actionable Intelligence</h4>
-                                    <p className="text-surface-600">Generate insights to help dismantle organized networks effectively.</p>
+                                    <p className="text-surface-600">Generate insights to help untangle complex networks effectively.</p>
                                 </div>
                             </li>
                         </ul>
@@ -354,7 +340,7 @@ export default function Landing() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                             </svg>
                         </div>
-                        <span className="text-sm font-semibold text-white">Nexus OS</span>
+                        <span className="text-sm font-semibold text-white">AstraX</span>
                     </div>
                     <p className="text-sm">
                         &copy; {new Date().getFullYear()} Advanced Intelligence Platform.
@@ -364,4 +350,3 @@ export default function Landing() {
         </div>
     );
 }
-
