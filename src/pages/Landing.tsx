@@ -1,10 +1,10 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import dashboardImage from "../assets/dashboard.png";
 import graphImage from "../assets/graph.png";
 
-const HeroScene = lazy(() => import("../components/landing/HeroScene"));
+const HeroScene = lazy(() => import("../components/landing/HeroScene.tsx"));
 
 const fadeUp = {
     hidden: { opacity: 0, y: 30 },
@@ -16,34 +16,12 @@ const fadeUp = {
 };
 
 const agencies = [
-    {
-        name: "CBI",
-        logo: "https://www.uxdt.nic.in/wp-content/uploads/2020/06/Preview-10.png",
-    },
-    {
-        name: "Police",
-        logo: "https://static.toiimg.com/thumb/msid-75646130,width-1280,height-720,resizemode-72/75646130.jpg",
-    },
-    {
-        name: "Cyber Crime Department",
-        logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQC6yJg0sRArBXtZJY31pwvBj_lZO0Fz_cCxqFjeYAYniiewLPKPa70rnY&s=10",
-    },
-    {
-        name: "Intelligence Bureau",
-        logo: "https://static.india.com/wp-content/uploads/2018/03/intelligence-bureau.jpg?impolicy=Medium_Resize&w=1200&h=800",
-    },
-    {
-        name: "RTO",
-        logo: "https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg",
-    },
-    {
-        name: "Financial Intelligence Unit",
-        logo: "https://upload.wikimedia.org/wikipedia/en/thumb/4/42/Financial_Intelligence_Unit%E2%80%94India_Logo.svg/1280px-Financial_Intelligence_Unit%E2%80%94India_Logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail",
-    },
-    {
-        name: "Interpol",
-        logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQa0YiAEL8rFwAGXWTjrfFeh6pPvwXAlfhxlKNqlr6BGg&s",
-    },
+    { name: "CBI", logo: "https://www.uxdt.nic.in/wp-content/uploads/2020/06/Preview-10.png" },
+    { name: "Police", logo: "https://static.toiimg.com/thumb/msid-75646130,width-1280,height-720,resizemode-72/75646130.jpg" },
+    { name: "Cyber Crime Department", logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQC6yJg0sRArBXtZJY31pwvBj_lZO0Fz_cCxqFjeYAYniiewLPKPa70rnY&s=10" },
+    { name: "Intelligence Bureau", logo: "https://static.india.com/wp-content/uploads/2018/03/intelligence-bureau.jpg?impolicy=Medium_Resize&w=1200&h=800" },
+    { name: "Financial Intelligence Unit", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/4/42/Financial_Intelligence_Unit%E2%80%94India_Logo.svg/1280px-Financial_Intelligence_Unit%E2%80%94India_Logo.svg.png?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail" },
+    { name: "Interpol", logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQa0YiAEL8rFwAGXWTjrfFeh6pPvwXAlfhxlKNqlr6BGg&s" },
 ];
 
 const features = [
@@ -51,26 +29,49 @@ const features = [
         icon: (
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" /></svg>
         ),
-        title: "Multi-Source Data Ingestion",
-        desc: "Seamlessly collect and process massive volumes of unstructured data from FIRs, CDRs, financial records, and intelligence reports.",
+        title: "Evidentiary Data Ingestion",
+        desc: "Securely upload and parse unstructured Call Detail Records (CDRs), financial ledgers, and FIRs maintaining strict cryptographic chain of custody.",
     },
     {
         icon: (
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7.5 3.75H6A2.25 2.25 0 0 0 3.75 6v1.5M16.5 3.75H18A2.25 2.25 0 0 1 20.25 6v1.5m0 9V18A2.25 2.25 0 0 1 18 20.25h-1.5m-9 0H6A2.25 2.25 0 0 1 3.75 18v-1.5M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
         ),
-        title: "AI & NLP Extraction",
-        desc: "Automatically extract critical entities such as people, organizations, vehicles, locations, and phone numbers from raw text.",
+        title: "Threat Actor Profiling",
+        desc: "Automatically correlate identifiers across datasets to build comprehensive profiles of suspects, alias networks, and associated vehicles.",
     },
     {
         icon: (
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m9.586-3.828a4.5 4.5 0 0 0-1.242-7.244l-4.5-4.5a4.5 4.5 0 0 0-6.364 6.364l1.757 1.757" /></svg>
         ),
-        title: "Relationship Graphing",
-        desc: "Visually map criminal networks. Discover hidden intermediaries and operational hubs that manual analysis misses.",
+        title: "Forensic Link Analysis",
+        desc: "Deploy advanced Graph Neural Networks to expose hidden syndicate hierarchies, money laundering loops, and illicit communication hubs.",
     },
 ];
 
 export default function Landing() {
+    useEffect(() => {
+        const script = document.createElement("script");
+        script.type = "text/javascript";
+        script.onload = () => {
+            if ((window as any).voiceflow) {
+                (window as any).voiceflow.chat.load({
+                    verify: { projectID: '6aa244d58daada4dbce49a3e' },
+                    url: 'https://general-runtime.voiceflow.com',
+                    voice: {
+                        url: "https://runtime-api.voiceflow.com"
+                    }
+                });
+            }
+        };
+        script.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs";
+        document.body.appendChild(script);
+
+        return () => {
+            if (document.body.contains(script)) {
+                document.body.removeChild(script);
+            }
+        };
+    }, []);
     return (
         <div className="min-h-screen bg-surface-0 font-sans text-surface-900">
             {/* ── Nav ─────────────────────────────────── */}
